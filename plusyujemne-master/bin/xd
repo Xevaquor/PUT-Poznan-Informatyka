@@ -1,0 +1,14 @@
+RocketSpeed = 1
+ShipSpeed = 10
+XResolution = 800
+YResolution = 600
+PlayerXVelocity = 7.4
+PlayerYVelocity = 4.6
+IdiotInterval = 20
+KamikadzeInterval = 40
+EnemyShootInterval = 17
+PlayerCrashDamage = 25
+EnemyCrashDamage = 100
+IdiotScore = 10
+KamikadzeScore = 25
+HP = 200

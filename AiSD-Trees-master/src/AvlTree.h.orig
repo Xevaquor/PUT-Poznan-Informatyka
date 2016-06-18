@@ -1,0 +1,229 @@
+<<<<<<< HEAD
+#pragma once
+
+#include<iostream>
+#include<cstdio>
+#include<sstream>
+#include<algorithm>
+
+#include "Node.h"
+#include "BstTree.h"
+
+#define pow2(n) (1 << (n))
+
+using namespace std;
+
+template<typename T>
+class AvlTree : public BstTree<T>
+=======
+#include <iostream>
+using namespace std;
+struct Node
+>>>>>>> 28a75dface63ac44d9411bfeaf4a87307a382afd
+{
+	int key;
+
+<<<<<<< HEAD
+public:
+	int height(Node<T> *temp)
+
+	{
+
+		int h = 0;
+
+		if (temp != NULL)
+
+		{
+
+			int l_height = height(temp->left);
+
+			int r_height = height(temp->right);
+
+			int max_height = max(l_height, r_height);
+
+			h = max_height + 1;
+
+		}
+
+		return h;
+
+	}
+
+
+	int diff(Node<T> *temp)
+
+	{
+
+		int l_height = height(temp->left);
+
+		int r_height = height(temp->right);
+
+		int b_factor = l_height - r_height;
+
+		return b_factor;
+
+	}
+	Node<T> *rr_rotation(Node<T> *parent)
+	{
+		Node<T> *temp;
+		temp = parent->right;
+		parent->right = temp->left;
+		temp->left = parent;
+		return temp;
+	}
+	Node<T> *ll_rotation(Node<T> *parent)
+	{
+		Node<T> *temp;
+		temp = parent->left;
+		parent->left = temp->right;
+		temp->right = parent;
+		return temp;
+	}
+	Node<T> *lr_rotation(Node<T> *parent)
+	{
+		Node<T> *temp;
+		temp = parent->left;
+		parent->left = rr_rotation(temp);
+		return ll_rotation(parent);
+	}
+	Node<T> *rl_rotation(Node<T> *parent)
+	{
+		Node<T> *temp;
+		temp = parent->right;
+		parent->right = ll_rotation(temp);
+		return rr_rotation(parent);
+	}
+	Node<T> *balance(Node<T> *temp)
+	{
+		int bal_factor = diff(temp);
+		if (bal_factor > 1)
+		{
+			if (diff(temp->left) > 0)
+				temp = ll_rotation(temp);
+			else
+				temp = lr_rotation(temp);
+		}
+		else if (bal_factor < -1)
+		{
+			if (diff(temp->right) > 0)
+				temp = rl_rotation(temp);
+			else
+				temp = rr_rotation(temp);
+		}
+		return temp;
+	}
+
+	Node<T> *insert(Node<T> *node, int value)
+	{
+		if (node == nullptr)
+		{
+			node = new Node<T>();
+			node->value = value;
+			node->left = nullptr;
+			node->right = nullptr;
+			return node;
+		}
+		else if (value < node->value)
+		{
+			node->left = insert(node->left, value);
+			node = balance(node);
+		}
+		else if (value >= node->value)
+		{
+			node->right = insert(node->right, value);
+			node = balance(node);
+		}
+		return node;
+	}
+
+	void Add(T val)
+	{
+		root = insert(root, val);
+	}
+
+	void display(Node<T> *ptr, int level)
+	{
+		int i;
+		if (ptr != nullptr)
+		{
+			display(ptr->right, level + 1);
+			printf("\n");
+			if (ptr == root)
+				cout << "Root -> ";
+			for (i = 0; i < level && ptr != root; i++)
+				cout << "        ";
+			cout << ptr->value;
+			display(ptr->left, level + 1);
+		}
+	}
+	void display()
+	{
+		display(nullptr, 0);
+	}
+
+	void inorder(Node<T> *tree)
+	{
+		if (tree == nullptr)
+			return;
+		inorder(tree->left);
+		cout << tree->value << "  ";
+		inorder(tree->right);
+	}
+
+	void preorder(Node<T> *tree)
+	{
+		if (tree == nullptr)
+			return;
+		cout << tree->value << "  ";
+		preorder(tree->left);
+		preorder(tree->right);
+	}
+	void postorder(Node<T> *tree)
+	{
+		if (tree == nullptr)
+			return;
+		postorder(tree->left);
+		postorder(tree->right);
+		cout << tree->value << "  ";
+	}
+	void Remove(T val)
+	{
+		BstTree::Remove(val);
+		root = balance(root);
+	}
+=======
+	Node *left;
+	Node *right;
+	Node *parent;
+	int bf;
+};
+
+class Tree
+{
+private:
+	Node   *root; //start
+
+public:
+	Tree();            // Constructor
+	~Tree();           // Destructor
+	void dodaj(int x);
+	Node* usun(int x);
+	void przywroc_drzewo(Node *ancestor, Node *newNode);
+	void ustaw_bf(Node *end, Node *start);
+	void rotacjaRR(Node *n);
+	void rotacjaLL(Node *n);
+	void ustaw_po_LR(Node *end, Node *start);
+	void ustaw_po_RL(Node *end, Node *start);
+	int znajdz_min();
+
+	void PrintTree();
+
+private:
+	void wyczysc_drzewo(Node *n);
+	void Print(Node *n);
+	Node* znajdz_po_kluczu(int key);
+
+};
+>>>>>>> 28a75dface63ac44d9411bfeaf4a87307a382afd
+
+	

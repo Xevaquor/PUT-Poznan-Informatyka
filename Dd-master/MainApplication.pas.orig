@@ -1,0 +1,216 @@
+﻿unit MainApplication;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, TOperativeUnit, ComCtrls, StdCtrls, DateUtils, FormAdd, FormEdit;
+  
+procedure Append(item : TElemType); stdcall
+	external 'LinkedList.dll' name 'Append';
+procedure WriteEach; stdcall
+	external 'LinkedList.dll' name 'WriteEach';
+procedure Seed; stdcall
+	external 'LinkedList.dll' name 'Seed';
+procedure WriteToFile; stdcall
+	external 'LinkedList.dll' name 'WriteToFile';
+procedure ReadFromFile; stdcall
+  external 'LinkedList.dll' name 'ReadFromFile';
+function GetHead : PElem; stdcall
+  external 'LinkedList.dll' name 'GetHead';
+function EqualTOperatives : PElem; stdcall
+  external 'LinkedList.dll' name 'EqualTOperatives';
+procedure Remove(op : TOperative); stdcall
+  external 'LinkedList.dll' name 'Remove';
+procedure UpdateOperative(a, b : TOperative); stdcall;
+  external 'LinkedList.dll' name 'UpdateOperative';
+
+type
+  TMainForm = class(TForm)
+    lvOperatives: TListView;
+    btnDelete: TButton;
+    btnAddOperative: TButton;
+    btnEdit: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure btnAddOperativeClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+    procedure lvOperativesColumnClick(Sender: TObject; Column: TListColumn);
+    procedure lvOperativesCompare(Sender: TObject; Item1, Item2: TListItem;
+      Data: Integer; var Compare: Integer);
+    procedure lvOperativesSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
+    procedure btnEditClick(Sender: TObject);
+  private
+    SortDescending : Bool;
+    SortColumn : Integer;
+    procedure FillListBox;
+    function OperativeFromSelected : TOperative;
+  public
+    { Public declarations }
+  end;
+
+var
+  MainForm: TMainForm;
+
+implementation
+
+{$R *.dfm}
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  ReadFromFile;
+  FillListBox;
+end;
+
+procedure TMainForm.lvOperativesColumnClick(Sender: TObject;
+  Column: TListColumn);
+begin
+     TListView(sender).SortType := stData;
+     if Column.Index <> SortColumn then
+     begin
+       SortColumn := Column.Index;
+       SortDescending := False;
+     end
+     else
+     begin
+       SortDescending := not SortDescending;
+       TListView(sender).SortType := stData;
+     end;
+
+       lvOperatives.AlphaSort;
+
+end;
+
+procedure TMainForm.lvOperativesCompare(Sender: TObject; Item1,
+  Item2: TListItem; Data: Integer; var Compare: Integer);
+begin
+     if SortColumn = 0 then
+     begin
+        Compare := CompareText(Item1.Caption, Item2.Caption)
+     end
+     else if SortColumn = 3 then
+     begin
+          Compare := CompareDate(
+          StrToDate(Item1.SubItems[2]),
+          StrToDate(Item2.SubItems[2]));
+
+     end
+     else
+     begin
+         Compare := CompareText(Item1.SubItems[SortColumn-1],
+         Item2.SubItems[SortColumn-1]);
+     end;
+
+     if SortDescending then
+        Compare := -Compare;
+
+end;
+
+procedure TMainForm.lvOperativesSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
+begin
+     btnEdit.Enabled := Selected;
+     btnDelete.Enabled := Selected;
+
+end;
+
+procedure TMainForm.FillListBox;
+var
+  iter : PElem;
+  item : TListItem;
+begin
+  lvOperatives.Items.Clear;
+  iter := GetHead;
+
+  while iter <> nil do
+  begin
+    item := lvOperatives.Items.Add;
+    item.Caption := iter^.Val.FirstName;
+    item.SubItems.Add(iter^.Val.LastName);
+    item.SubItems.Add(iter^.Val.NickName);
+    item.SubItems.Add(DateToStr(iter^.Val.DateOfBirth));
+    item.SubItems.Add(iter^.Val.BirthPlace);
+
+    iter := iter^.Next;
+  end;
+
+end;
+
+procedure TMainForm.btnAddOperativeClick(Sender: TObject);
+var
+  row : TOperative;
+begin
+     FormAdd.Form1.ShowModal;
+
+
+  WriteToFile;
+  FillListBox;
+
+end;
+
+function TMainForm.OperativeFromSelected : TOperative;
+var
+  op : TOperative;
+  i : Integer;
+begin
+  for i := 0 to lvOperatives.Items.Count - 1 do
+  begin
+    if lvOperatives.Items[i].Selected then //DAFUQ
+      begin
+        op.FirstName := lvOperatives.Items[i].Caption;
+        op.LastName := lvOperatives.Items[i].SubItems[0];
+        op.NickName := lvOperatives.Items[i].SubItems[1];
+        op.DateOfBirth := StrToDate(lvOperatives.Items[i].SubItems[2]);
+        op.BirthPlace := lvOperatives.Items[i].SubItems[3];
+        Result := op;
+        Exit;
+      end;
+  end;
+end;
+
+procedure TMainForm.btnDeleteClick(Sender: TObject);
+var
+  op : TOperative;
+  dlgResult : Integer;
+begin
+  if lvOperatives.Selected <> nil then
+  begin
+    dlgResult := MessageDlg('Na pewno usunąć?', mtConfirmation, mbYesNo, 0);
+    if dlgResult = mrYes then
+    begin
+      op := OperativeFromSelected;
+      Remove(op);
+      FillListBox;
+    end;
+  end;
+end;
+
+procedure TMainForm.btnEditClick(Sender: TObject);
+var
+   row, old : TOperative;
+begin
+     old := OperativeFromSelected;
+     FormEdit.Form2.OperativeBeingEdited := @row;
+     FormEdit.Form2.edtFirstName.Text := old.FirstName;
+     FormEdit.Form2.edtLastName.Text := old.LastName;
+     FormEdit.Form2.edtNickName.Text := old.NickName;
+     FormEdit.Form2.dtpBirthDate.Date := old.DateOfBirth;
+     FormEdit.Form2.edtPlaceOfBirth.Text := old.BirthPlace;
+
+     
+     FormEdit.Form2.ShowModal;
+
+     if FormEdit.Form2.OperativeBeingEdited <> nil then
+     begin
+         UpdateOperative(old, row);
+     end;
+
+     FillListBox;
+<<<<<<< HEAD
+=======
+
+     //TODO: defaultowo wygasić btnDelete
+>>>>>>> 055f2407a3c3714965164b1bf824cef666918c72
+end;
+
+end.

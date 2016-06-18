@@ -1,0 +1,33 @@
+program LinkedListTest;
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils,
+  TOperativeUnit in 'TOperativeUnit.pas';
+
+procedure Append(item : TElemType); stdcall
+	external 'LinkedList.dll' name 'Append';
+procedure WriteEach; stdcall
+	external 'LinkedList.dll' name 'WriteEach';
+<<<<<<< HEAD
+procedure Seed; stdcall
+	external 'LinkedList.dll' name 'Seed';
+=======
+>>>>>>> origin/master
+
+var
+	bolek, stokrotka : TOperative;
+begin
+<<<<<<< HEAD
+	Seed;
+=======
+	bolek.FirstName := 'Lech';
+	stokrotka.FirstName := 'Monika';
+	WriteEach;
+	Append(bolek);
+	WriteEach;
+	Append(stokrotka);
+>>>>>>> origin/master
+	WriteEach;
+end.

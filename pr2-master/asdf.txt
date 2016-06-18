@@ -1,0 +1,19 @@
+I'm slave, number 1
+I'm slave, number 2
+I'm slave, number 3
+I'm slave, number 4
+I'm slave, number 5
+
+job aborted:
+[ranks] message
+
+[0] process exited without calling finalize
+
+[1-5] terminated
+
+---- error analysis -----
+
+[0] on POZMW030029
+python ended prematurely and may have crashed. exit code -1
+
+---- error analysis -----

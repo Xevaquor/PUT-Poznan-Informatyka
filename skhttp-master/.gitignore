@@ -1,0 +1,35 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+src/client/SkHttpClient.Tests/obj/
+src/client/SkHttpClient.Tests/bin/
+src/client/SkHttpClient/obj/
+src/client/SkHttpClient/.vs/
+public_html/ubu.iso
+*.dll
+*.pdb
+src/client/SkHttpClient/bin/

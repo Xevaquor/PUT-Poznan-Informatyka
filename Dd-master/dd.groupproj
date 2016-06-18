@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{FE1B0ED3-425B-4301-BB01-50D20725CB2B}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="LinkedList.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="LinkedListTest.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Bolek.dproj">
+            <Dependencies>komponent\TWatermarkEditCustomVCLComponent.dproj</Dependencies>
+        </Projects>
+        <Projects Include="komponent\TWatermarkEditCustomVCLComponent.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="LinkedList">
+        <MSBuild Projects="LinkedList.dproj"/>
+    </Target>
+    <Target Name="LinkedList:Clean">
+        <MSBuild Projects="LinkedList.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="LinkedList:Make">
+        <MSBuild Projects="LinkedList.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="LinkedListTest">
+        <MSBuild Projects="LinkedListTest.dproj"/>
+    </Target>
+    <Target Name="LinkedListTest:Clean">
+        <MSBuild Projects="LinkedListTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="LinkedListTest:Make">
+        <MSBuild Projects="LinkedListTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Bolek" DependsOnTargets="TWatermarkEditCustomVCLComponent">
+        <MSBuild Projects="Bolek.dproj"/>
+    </Target>
+    <Target Name="Bolek:Clean" DependsOnTargets="TWatermarkEditCustomVCLComponent:Clean">
+        <MSBuild Projects="Bolek.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Bolek:Make" DependsOnTargets="TWatermarkEditCustomVCLComponent:Make">
+        <MSBuild Projects="Bolek.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="TWatermarkEditCustomVCLComponent">
+        <MSBuild Projects="komponent\TWatermarkEditCustomVCLComponent.dproj"/>
+    </Target>
+    <Target Name="TWatermarkEditCustomVCLComponent:Clean">
+        <MSBuild Projects="komponent\TWatermarkEditCustomVCLComponent.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="TWatermarkEditCustomVCLComponent:Make">
+        <MSBuild Projects="komponent\TWatermarkEditCustomVCLComponent.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="LinkedList;LinkedListTest;Bolek;TWatermarkEditCustomVCLComponent"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="LinkedList:Clean;LinkedListTest:Clean;Bolek:Clean;TWatermarkEditCustomVCLComponent:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="LinkedList:Make;LinkedListTest:Make;Bolek:Make;TWatermarkEditCustomVCLComponent:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
